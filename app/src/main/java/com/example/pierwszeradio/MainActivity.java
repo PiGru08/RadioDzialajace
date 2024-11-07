@@ -1,7 +1,9 @@
 package com.example.pierwszeradio;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -34,20 +36,27 @@ public class MainActivity extends AppCompatActivity {
         radioButtons[2] = findViewById(R.id.radioButton3);
         buttonDalej = findViewById(R.id.buttonDalej);
         buttonSprawdz = findViewById(R.id.buttonSprawd);
+        buttonDalej.setVisibility(View.INVISIBLE);
         buttonSprawdz.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                int idZaznaczone = radioGroup.getCheckedRadioButtonId();
                 for (int i = 0; i < radioButtons.length; i++) {
+                    radioButtons[i].setBackgroundColor(Color.WHITE);
                    if(radioButtons[i].getId()==idZaznaczone){
+                       radioButtons[i].setChecked(false);
                         pytania.get(strona).sprawdzOdpowiedz(i);
                         if(pytania.get(strona).isCzyUdzielonoPoprawnejOdpowiedzi()){
                             Toast.makeText(MainActivity.this, "Udzielono dobrej odpowiedzi", Toast.LENGTH_SHORT).show();
+                            radioButtons[i].setBackgroundColor(Color.GREEN);
                         }else{
                             Toast.makeText(MainActivity.this, "Udzielono złej odpowiedzi!", Toast.LENGTH_SHORT).show();
+                            radioButtons[i].setBackgroundColor(Color.RED);
                         }
                     }
                 }
+                buttonSprawdz.setVisibility(View.INVISIBLE);
+                buttonDalej.setVisibility(View.VISIBLE);
             }
         });
         radioGroup = findViewById(R.id.radioGrupa);
@@ -55,12 +64,23 @@ public class MainActivity extends AppCompatActivity {
         buttonDalej.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                buttonSprawdz.setVisibility(View.VISIBLE);
+                buttonDalej.setVisibility(View.INVISIBLE);
                 strona++;
+                for (int i = 0; i < radioButtons.length; i++) {
+                    radioButtons[i].setBackgroundColor(Color.WHITE);
+                }
                 if(strona ==  pytania.size()){
                     buttonDalej.setVisibility(View.INVISIBLE);
+                    radioGroup.setVisibility(View.INVISIBLE);
+                    textView.setText("Otrzymano "+podliczPunkty()+" punktów");
+                    buttonSprawdz.setVisibility(View.INVISIBLE);
                     strona--;
                 }
-                wyswietlPytanie(strona);
+                else{
+                    wyswietlPytanie(strona);
+                }
+
             }
         });
     }
@@ -69,5 +89,20 @@ public class MainActivity extends AppCompatActivity {
         for (int j = 0; j < radioButtons.length; j++) {
             radioButtons[j].setText(pytania.get(i).getOdpowiedzi()[j]);
         }
+    }
+    private int podliczPunkty(){
+        int sumaPunktow = 0;
+        for (Pytanie pytanie:pytania){
+            if(pytanie.isCzyUdzielonoPoprawnejOdpowiedzi()){
+                sumaPunktow++;
+            }
+        }
+        return sumaPunktow;
+    }
+
+    @Override
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt()
     }
 }
