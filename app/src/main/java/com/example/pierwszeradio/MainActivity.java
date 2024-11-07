@@ -26,6 +26,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         pytania.add(new Pytanie("Na jakim systemie operacyjnym Android?", "Windows", "Dos", "Linux", 2));
         pytania.add(new Pytanie("Nazwa wersji androida to często?","Ciasteczko", "Owoc", "Warzywo",0));
         pytania.add(new Pytanie("Językiem rekomendowanym do pisania aplikacji na androida przez Google?", "Java", "Kotlin","C++", 1));
@@ -73,6 +74,8 @@ public class MainActivity extends AppCompatActivity {
                 if(strona ==  pytania.size()){
                     buttonDalej.setVisibility(View.INVISIBLE);
                     radioGroup.setVisibility(View.INVISIBLE);
+                    textView.setTextSize(42);
+                    textView.setTextColor(Color.BLACK);
                     textView.setText("Otrzymano "+podliczPunkty()+" punktów");
                     buttonSprawdz.setVisibility(View.INVISIBLE);
                     strona--;
@@ -81,8 +84,14 @@ public class MainActivity extends AppCompatActivity {
                     wyswietlPytanie(strona);
                 }
 
+
             }
         });
+        if(savedInstanceState!=null){
+            strona=savedInstanceState.getInt("NR");
+            wyswietlPytanie(strona);
+            // = savedInstanceState.getInt("Punkty");
+        }
     }
     private void wyswietlPytanie(int i){
     textView.setText(pytania.get(i).getTrescPytania());
@@ -103,6 +112,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putInt()
+        outState.putInt("NR",strona);
+        outState.putInt("Punkty",podliczPunkty());
     }
 }
